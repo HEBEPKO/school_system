@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaBuddyIdeaProjectConfig" migrateIndexesAndConstraints="true" reUseTableSchema="true">
+    <option name="migrateIndexesAndConstraints" value="true" />
+    <option name="reLastEntityCreationPackage" value="src/main/java/school" />
+    <option name="reverseEngineeringLastDbConnectionId" value="5cfd3ac9-9461-4067-8330-45919545e33c__postgres_public" />
+  </component>
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit name="Default">
+        <packages>
+          <package value="school.model" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>

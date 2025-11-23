@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Школа</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🎓 Плещеницкая школа №1</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#" id="classes-tab" class="active">Классы</a></li>
+                    <li><a href="#" id="students-tab">Ученики</a></li>
+                    <li><a href="#" id="teachers-tab">Учителя</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="search-section">
+            <label for="class-search"></label>
+            <input type="text" id="class-search" placeholder="Поиск класса (например, 10А)">
+            <button id="search-btn">Найти</button>
+            <button id="create-class-btn">➕ Создать класс</button>
+        </div>
+
+        <!-- Контейнеры для вкладок -->
+        <div id="tab-content">
+            <!-- Вкладка Классы (по умолчанию) -->
+            <div id="classes-tab-content" class="tab-content active">
+                <div id="class-container" class="class-container">
+                    <p class="info-message">Введите название класса в поле поиска для отображения информации</p>
+                </div>
+            </div>
+
+            <!-- Вкладка Ученики -->
+            <div id="students-tab-content" class="tab-content">
+                <div class="students-header">
+                    <h2 class="section-title">👥 Список всех учеников</h2>
+                    <div class="search-filter">
+                        <input type="text" id="students-search" placeholder="Поиск по ФИО или классу...">
+                        <select id="students-class-filter">
+                            <option value="">Все классы</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="students-container" class="students-container">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Загрузка списка учеников...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Вкладка Учителя -->
+            <div id="teachers-tab-content" class="tab-content">
+                <div class="teachers-header">
+                    <h2 class="section-title">👩‍🏫 Список всех учителей</h2>
+                    <div class="search-filter">
+                        <input type="text" id="teachers-search" placeholder="Поиск по ФИО или предмету...">
+                        <select id="teachers-subject-filter">
+                            <option value="">Все предметы</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="teachers-container" class="teachers-container">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Загрузка списка учителей...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Загрузка данных...</p>
+        </div>
+
+        <div id="error-message" class="error-message hidden"></div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Школьная информационная система | Версия 1.0</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
