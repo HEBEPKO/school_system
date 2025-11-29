@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ClassDTO {
+public class SchoolClassDTO {
     private Long id;
     private String className;
     private String academicYear;

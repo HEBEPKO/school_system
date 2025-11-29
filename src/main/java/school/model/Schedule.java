@@ -19,7 +19,7 @@ public class Schedule {
     private String subject;
 
     @ManyToOne
-    private Class schoolClass;
+    private SchoolClass schoolClass;
 
     @ManyToOne
     private Teacher teacher;

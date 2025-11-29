@@ -33,10 +33,11 @@ CREATE TABLE IF NOT EXISTS students (
 CREATE TABLE IF NOT EXISTS classes (
     id SERIAL PRIMARY KEY,
     class_name VARCHAR(20) NOT NULL UNIQUE,
-    class_teachers_id INTEGER REFERENCES teachers(id),
+    class_teacher_id INTEGER REFERENCES teachers(id),
     academic_year VARCHAR(9) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (class_teacher_id) REFERENCES teachers(id)
 );
 
 --Родительский кабинет
@@ -69,4 +70,7 @@ CREATE TABLE IF NOT EXISTS class_teacher (
 CREATE INDEX IF NOT EXISTS idx_students_name ON students(last_name, first_name);
 CREATE INDEX IF NOT EXISTS idx_teachers_name ON teachers(last_name, first_name);
 CREATE INDEX IF NOT EXISTS idx_classes_name ON classes(class_name);
+CREATE INDEX IF NOT EXISTS idx_classes_name_year ON classes(class_name, academic_year);
+CREATE INDEX IF NOT EXISTS idx_class_students_student ON class_students(student_id);
+CREATE INDEX IF NOT EXISTS idx_class_teachers_teacher ON class_teacher(teacher_id);
 

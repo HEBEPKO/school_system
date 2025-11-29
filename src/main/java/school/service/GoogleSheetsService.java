@@ -9,7 +9,7 @@
 //import com.google.api.services.sheets.v4.SheetsScopes;
 //import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
 //import school.model.SchoolClass;
-//import school.repository.ClassRepository;
+//import school.repository.SchoolClassRepository;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@
 //    @Value("${google.credentials.file}")
 //    private String credentialsFile;
 //
-//    private final ClassRepository classRepository;
+//    private final SchoolClassRepository classRepository;
 //
 //    public String initClassJournal(Long classId) throws IOException, GeneralSecurityException {
 //        SchoolClass aClass = classRepository.findById(classId)

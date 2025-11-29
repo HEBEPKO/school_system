@@ -1,26 +1,20 @@
 package school.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import school.dto.TeacherDTO;
-import school.dto.TeacherSearchRequest;
+import school.model.SchoolClass;
 import school.model.Teacher;
-import school.repository.ClassRepository;
+import school.repository.SchoolClassRepository;
 import school.repository.TeacherRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class TeacherService {
     private final TeacherRepository teacherRepository;
-    private final ClassRepository classRepository;
+    private final SchoolClassRepository schoolClassRepository;
 
 //    public Page<TeacherDTO> searchTeacher(TeacherSearchRequest request) {
 //        Pageable pageable = request.toPageable();
@@ -42,6 +36,45 @@ public class TeacherService {
 //    public List<String> getAvailableSubject() {
 //        return teacherRepository.findDistinctSubjects();
 //    }
+
+    @Transactional(readOnly = true)
+    public Teacher getTeacherWitchClasses(Long teacherId) {
+        return teacherRepository.findWithClassesById(teacherId);
+    }
+
+    @Transactional(readOnly = true)
+    public void addTeacherToClass(Long teacherId, Long classId) {
+        Teacher teacher = teacherRepository.findWithClassesById(teacherId);
+        SchoolClass schoolClass = schoolClassRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Класс не найден"));
+        teacher.addClass(schoolClass);
+        teacherRepository.save(teacher);
+    }
+
+    @Transactional(readOnly = true)
+    public void removeTeacherFromClass(Long teacherId, Long classId) {
+        Teacher teacher = teacherRepository.findWithClassesById(teacherId);
+        SchoolClass schoolClass = schoolClassRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Класс не найден"));
+
+        teacher.removeClass(schoolClass);
+        teacherRepository.save(teacher);
+    }
+
+    @Transactional(readOnly = true)
+    public void assignClassTeacher(Long teacherId, Long classId) {
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new RuntimeException("Учитель не найден"));
+        SchoolClass schoolClass = schoolClassRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Класс не найден"));
+
+        if (schoolClass.getClassTeacher() != null) {
+            schoolClass.getClassTeacher().setClassTeacher(false);
+            schoolClass.getClassTeacher().setManagedClass(null);
+        }
+        teacher.setManagedClass(schoolClass);
+        teacherRepository.save(teacher);
+    }
 
     private TeacherDTO convertToDTO(Teacher teacher) {
         TeacherDTO dto = new TeacherDTO();

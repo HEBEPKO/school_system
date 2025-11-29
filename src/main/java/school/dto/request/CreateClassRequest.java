@@ -1,4 +1,4 @@
-package school.dto;
+package school.dto.request;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class CreateClassRequest {
     @NotBlank(message = "Название класса обязательно")
-    @Pattern(regexp = "^[5-9][А-Яа-я]$", message = "Название класса должно быть в формате: 10А, 9Б и т.д.")
+    @Pattern(regexp = "^[5-9][А-Яа-я, Az]$", message = "Название класса должно быть в формате: 10А, 9Б и т.д.")
     private String className;
 
     @NotBlank(message = "Учебный год обязателен")

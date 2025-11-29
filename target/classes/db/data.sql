@@ -48,5 +48,5 @@ INSERT INTO students(
 --Вставка в таблицу classes
 
 INSERT INTO classes(
-	class_name, class_teachers_id, academic_year)
+	class_name, class_teacher_id, academic_year)
 	VALUES ('8B', 1, 2025), ('8A', 2, 2025);

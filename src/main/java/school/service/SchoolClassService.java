@@ -4,15 +4,15 @@ import school.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import school.dto.ClassDTO;
+import school.dto.SchoolClassDTO;
 import school.dto.request.CreateClassRequest;
 import school.dto.StudentDTO;
 import school.dto.TeacherDTO;
 import school.exception.ResourceNotFoundException;
-import school.model.Class;
+import school.model.SchoolClass;
 import school.model.Student;
 import school.model.Teacher;
-import school.repository.ClassRepository;
+import school.repository.SchoolClassRepository;
 import school.repository.StudentRepository;
 import school.repository.TeacherRepository;
 
@@ -23,30 +23,30 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ClassService {
-    private final ClassRepository classRepository;
+public class SchoolClassService {
+    private final SchoolClassRepository schoolClassRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
 
     @Transactional(readOnly = true)
-    public ClassDTO getClassDetails(Long classId) {
-        Class schoolClass = classRepository.findById(classId)
+    public SchoolClassDTO getClassDetails(Long classId) {
+        SchoolClass schoolClass = schoolClassRepository.findById(classId)
                 .orElseThrow(() -> new RuntimeException("Класс не найден"));
         return convertToDTO(schoolClass);
     }
 
     @Transactional(readOnly = true)
-    public ClassDTO getClassByClassName(String className) {
-        Class schoolClass = classRepository.findByClassName(className)
+    public SchoolClassDTO getClassByClassName(String className) {
+        SchoolClass schoolClass = schoolClassRepository.findByClassName(className)
                 .orElseThrow(() -> new RuntimeException("Класс не найден"));
         return convertToDTO(schoolClass);
     }
 
-    public ClassDTO createNewClass(CreateClassRequest request) {
+    public SchoolClassDTO createNewClass(CreateClassRequest request) {
         // 1. Валидация входных данных
         validateCreatedRequest(request);
         // 2. Проверка существования класса с таким же названием в этом учебном году
-        if (classRepository.existsByClassNameAndAcademicYear(request.getClassName(), request.getAcademicYear())) {
+        if (schoolClassRepository.existsByClassNameAndAcademicYear(request.getClassName(), request.getAcademicYear())) {
             throw new ValidationException(String.format(
                     "Класс '%s' уже существует в учебном году '%s' ",
                     request.getClassName(), request.getAcademicYear()
@@ -66,7 +66,7 @@ public class ClassService {
         }
 
         // 4. Проверка, не назначен ли этот учитель уже классным руководителем другого класса в том же учебном году
-        if (classRepository.existsByClassTeacherAndAcademicYear(classTeacher, request.getAcademicYear())) {
+        if (schoolClassRepository.existsByClassTeacherAndAcademicYear(classTeacher, request.getAcademicYear())) {
             throw new ValidationException(
                     String.format("Учитель '%s' уже является классным руководителем другого класса в учебном году %s",
                             classTeacher.getFullName(), request.getAcademicYear())
@@ -106,22 +106,23 @@ public class ClassService {
         }
 
         // 7. Создание и сохранение нового класса
-        Class newClass = new Class();
-        newClass.setClassName(request.getClassName());
-        newClass.setAcademicYear(request.getAcademicYear());
-        newClass.setClassTeacher(classTeacher);
-        newClass.setStudents(students);
-        newClass.setTeachers(teachers);
-        newClass.setCreatedAt(LocalDateTime.now());
-        newClass.setUpdatedAt(LocalDateTime.now());
+        SchoolClass newSchoolClass = new SchoolClass();
+        newSchoolClass.setClassName(request.getClassName());
+        newSchoolClass.setAcademicYear(request.getAcademicYear());
+        newSchoolClass.setClassTeacher(classTeacher);
+        classTeacher.setManagedClass(newSchoolClass);
+        newSchoolClass.setStudents(students);
+        newSchoolClass.setTeachers(teachers);
+        newSchoolClass.setCreatedAt(LocalDateTime.now());
+        newSchoolClass.setUpdatedAt(LocalDateTime.now());
 
-        Class savedClass = classRepository.save(newClass);
+        SchoolClass savedSchoolClass = schoolClassRepository.save(newSchoolClass);
 
         // 8. Обновление связей у учеников и учителей (опционально, зависит от вашей логики)
-        updateStudentClassReferences(savedClass, students);
-        updateTeacherClassReferences(savedClass, teachers);
+        updateStudentClassReferences(savedSchoolClass, students);
+        updateTeacherClassReferences(savedSchoolClass, teachers);
 
-        return convertToDTO(savedClass);
+        return convertToDTO(savedSchoolClass);
     }
 
     private void validateCreatedRequest(CreateClassRequest request) {
@@ -163,10 +164,10 @@ public class ClassService {
         }
     }
 
-    private void updateStudentClassReferences(Class schoolClass, Set<Student> students) {
+    private void updateStudentClassReferences(SchoolClass schoolClass, Set<Student> students) {
         for (Student student : students) {
             // Если у ученика уже есть классы, добавляем новый
-            Set<Class> studentClasses = student.getClasses();
+            Set<SchoolClass> studentClasses = student.getClasses();
             if (studentClasses == null) {
                 studentClasses = new HashSet<>();
                 student.setClasses(studentClasses);
@@ -176,11 +177,11 @@ public class ClassService {
         }
     }
 
-    private void updateTeacherClassReferences(Class schoolClass, Set<Teacher> teachers) {
+    private void updateTeacherClassReferences(SchoolClass schoolClass, Set<Teacher> teachers) {
         for (Teacher teacher : teachers) {
             // Если учитель не является классным руководителем, добавляем его в класс
             if (!teacher.equals(schoolClass.getClassTeacher())) {
-                Set<Class> teacherClasses = teacher.getClasses();
+                Set<SchoolClass> teacherClasses = teacher.getClasses();
                 if (teacherClasses == null) {
                     teacherClasses = new HashSet<>();
                     teacher.setClasses(teacherClasses);
@@ -192,8 +193,8 @@ public class ClassService {
         }
     }
 
-    private ClassDTO convertToDTO(Class schoolClass) {
-        ClassDTO dto = new ClassDTO();
+    private SchoolClassDTO convertToDTO(SchoolClass schoolClass) {
+        SchoolClassDTO dto = new SchoolClassDTO();
         dto.setId(schoolClass.getId());
         dto.setClassName(schoolClass.getClassName());
         dto.setAcademicYear(schoolClass.getAcademicYear());
@@ -238,8 +239,8 @@ public class ClassService {
         return dto;
     }
 
-    public List<Class> findAll() {
-        return classRepository.findAll();
+    public List<SchoolClass> findAll() {
+        return schoolClassRepository.findAll();
     }
 
 
