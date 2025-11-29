@@ -8,7 +8,7 @@
 //import com.google.api.services.sheets.v4.Sheets;
 //import com.google.api.services.sheets.v4.SheetsScopes;
 //import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
-//import school.model.Class;
+//import school.model.SchoolClass;
 //import school.repository.ClassRepository;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@
 //    private final ClassRepository classRepository;
 //
 //    public String initClassJournal(Long classId) throws IOException, GeneralSecurityException {
-//        Class aClass = classRepository.findById(classId)
+//        SchoolClass aClass = classRepository.findById(classId)
 //                .orElseThrow(() -> new RuntimeException("Класс не найден"));
 //
 //        if (aClass.getGoogleSheetId() != null) {

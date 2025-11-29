@@ -11,3 +11,4 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByLastNameStartingWith(String prefix);
 //    List<Student> findByClassId(Long classId);
 }
+
